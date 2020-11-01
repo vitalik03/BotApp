@@ -3,7 +3,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { UserLogin } from '../user/dto/create-user-dto';
 import { UserService } from '../user/user.service';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller()
 export class AuthController {
 
@@ -17,6 +19,7 @@ export class AuthController {
        return await this.authService.validate(user);
     }
 
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get('me')
     getProfile(@Request() req) {
