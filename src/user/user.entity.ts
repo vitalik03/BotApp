@@ -1,7 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate, OneToMany } from 'typeorm';
 import { Exclude, } from "class-transformer";
 import { IsEmail } from 'class-validator';
 import * as bcrypt from 'bcrypt';
+import { Bot } from 'src/bots/bots.entity';
+import { saltRounds } from 'src/configs/bcrypt';
 
 @Entity()
 export class User {
@@ -20,7 +22,7 @@ export class User {
 
     @BeforeInsert()
     async hashPassword() {
-        this.password = await bcrypt.hash(this.password, 10);
+        this.password = await bcrypt.hash(this.password, saltRounds);
     }
 
     @Column({})
@@ -51,5 +53,7 @@ export class User {
         this.updatedAt = date;
     }
 
+    @OneToMany(() => Bot, bots => bots.user, {cascade: true})
+    bots: Bot[];
 }
 

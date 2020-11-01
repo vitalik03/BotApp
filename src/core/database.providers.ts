@@ -1,3 +1,4 @@
+import { Bot } from 'src/bots/bots.entity';
 import { User } from 'src/user/user.entity';
 import { createConnection } from 'typeorm';
 export const databaseProviders = [
@@ -11,7 +12,8 @@ export const databaseProviders = [
             password: 'admin',
             database: 'BotApp',
             entities: [
-                User
+                User,
+                Bot
             ],
             synchronize: true,
         }),

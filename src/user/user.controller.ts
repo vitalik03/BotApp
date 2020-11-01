@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import { IUser } from './interface/user.interface';
 import { CreateUserDto } from './dto/create-user-dto';
@@ -6,7 +6,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { succesfulDeleting } from '../constants/user-responses'
 import { AuthGuard } from '@nestjs/passport';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
@@ -17,26 +17,20 @@ export class UserController {
     
     @UseGuards(AuthGuard('jwt'))
     @Get()
-    async getUsers(): Promise<IUser[]> {
-      return this.userService.getUsers();
-    };
-
-    @UseGuards(AuthGuard('jwt'))
-    @Get(':id')
-    async getById(@Param('id') id: string): Promise<IUser> {
-      return await this.userService.getById(id);
+    async getById(@Request() req): Promise<IUser> {
+      return await this.userService.getById(req.user.userId);
     }
     
     @UseGuards(AuthGuard('jwt'))
-	  @Put(':id')
-  	async update(@Param('id') id: string, @Body() updateUser: UpdateUserDto): Promise<IUser> {
-	  return await this.userService.update(id, updateUser);
+	  @Put()
+  	async update(@Request() req, @Body() updateUser: UpdateUserDto): Promise<IUser> {
+	  return await this.userService.update(req.user.userId, updateUser);
     }
     
     @UseGuards(AuthGuard('jwt'))
-	  @Delete(':id')
-	  async delete(@Param('id') id:string) {
-	  await this.userService.delete(id);
+	  @Delete()
+	  async delete(@Request() req) {
+	  await this.userService.delete(req.user.userId);
       return succesfulDeleting;
     }
 }
