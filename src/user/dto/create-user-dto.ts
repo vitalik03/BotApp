@@ -21,3 +21,15 @@ export class CreateUserDto{
 
     readonly updatedAt: Date;
 }
+
+export class UserLogin {
+
+    @IsEmail()
+    @IsNotEmpty()
+    readonly email: string;
+  
+    @MinLength(8)
+    @IsNotEmpty()
+    readonly password: string;
+  
+  }
